@@ -134,7 +134,9 @@ export function initGlobalEnv (): void {
     })
 
     // global effect
+    // NOTE-CR: 创建style标签并进行挂载
     rejectMicroAppStyle()
+    // NOTE-CR: 移除unmount事件，避免嵌套子应用事件重复注册
     releaseUnmountOfNestedApp()
     listenUmountOfNestedApp()
   }

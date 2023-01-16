@@ -56,6 +56,7 @@ export function defineElement (tagName: string): void {
     // baseRoute: route prefix, default is ''
     // keep-alive: open keep-alive mode
 
+    // NOTE-CR: 自定义组件钩子函数-标签挂载到document之后调用
     connectedCallback (): void {
       this.hasConnected = true
 
@@ -67,7 +68,7 @@ export function defineElement (tagName: string): void {
 
       this.initialMount()
     }
-
+    // NOTE-CR: 自定义组件钩子函数-
     disconnectedCallback (): void {
       this.hasConnected = false
       // keep-alive
@@ -77,7 +78,7 @@ export function defineElement (tagName: string): void {
         this.handleUnmount(this.getDestroyCompatibleResult())
       }
     }
-
+    // NOTE-CR: 自定义组件钩子函数-
     attributeChangedCallback (attr: ObservedAttrName, _oldVal: string, newVal: string): void {
       if (
         this.legalAttribute(attr, newVal) &&
@@ -417,6 +418,6 @@ export function defineElement (tagName: string): void {
       return null
     }
   }
-
+  // NOTE-CR: 注册自定义标签|组件
   window.customElements.define(tagName, MicroAppElement)
 }

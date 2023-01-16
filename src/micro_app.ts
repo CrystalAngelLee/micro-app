@@ -115,6 +115,7 @@ export function unmountAllApps (options?: unmountAppParams): Promise<void> {
 }
 
 export class MicroApp extends EventCenterForBaseApp implements MicroAppConfigType {
+  // NOTE-CR: 格式化默认参数
   tagName = 'micro-app'
   shadowDOM?: boolean
   destroy?: boolean
@@ -132,6 +133,7 @@ export class MicroApp extends EventCenterForBaseApp implements MicroAppConfigTyp
       return logError('micro-app is not supported in this environment')
     }
 
+    // NOTE-CR: 根据选项修改展示的tagName
     if (options?.tagName) {
       if (/^micro-app(-\S+)?/.test(options.tagName)) {
         this.tagName = options.tagName
@@ -144,6 +146,7 @@ export class MicroApp extends EventCenterForBaseApp implements MicroAppConfigTyp
       return logWarn(`element ${this.tagName} is already defined`)
     }
 
+    // NOTE-CR: 初始化全局环境变量
     initGlobalEnv()
 
     if (options && isPlainObject(options)) {
@@ -155,14 +158,16 @@ export class MicroApp extends EventCenterForBaseApp implements MicroAppConfigTyp
        */
       // @ts-ignore
       this.destory = options.destory
+      // NOTE-CR: inline 属性决定了 script 标签在内存还是在数据标签中执行JS代码
       this.inline = options.inline
       this.disableScopecss = options.disableScopecss
       this.disableSandbox = options.disableSandbox
       this.ssr = options.ssr
+      // NOTE-CR: 自定义 fetch 函数
       isFunction(options.fetch) && (this.fetch = options.fetch)
-
+      // NOTE-CR: 生命周期
       isPlainObject(options.lifeCycles) && (this.lifeCycles = options.lifeCycles)
-
+      // NOTE-CR: 初始化预加载参数
       // load app assets when browser is idle
       options.preFetchApps && preFetch(options.preFetchApps)
 
@@ -187,6 +192,7 @@ export class MicroApp extends EventCenterForBaseApp implements MicroAppConfigTyp
       }
     }
 
+    // NOTE-CR: 注册自定义组件
     // define customElement after init
     defineElement(this.tagName)
   }
