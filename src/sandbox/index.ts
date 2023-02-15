@@ -181,6 +181,7 @@ export default class SandBox implements SandBoxInterface {
   private createProxyWindow (appName: string) {
     const rawWindow = globalEnv.rawWindow
     const descriptorTargetMap = new Map<PropertyKey, 'target' | 'rawWindow'>()
+    // NOTE-CR: 沙箱
     // window.xxx will trigger proxy
     return new Proxy(this.microAppWindow, {
       get: (target: microAppWindowType, key: PropertyKey): unknown => {

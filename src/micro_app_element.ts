@@ -65,10 +65,11 @@ export function defineElement (tagName: string): void {
         this.appName,
         lifeCycles.CREATED,
       ))
-
+      // NOTE-CR: 在微任务中添加任务
       this.initialMount()
     }
-    // NOTE-CR: 自定义组件钩子函数-
+
+    // NOTE-CR: 自定义组件钩子函数-unmonted
     disconnectedCallback (): void {
       this.hasConnected = false
       // keep-alive
@@ -78,7 +79,8 @@ export function defineElement (tagName: string): void {
         this.handleUnmount(this.getDestroyCompatibleResult())
       }
     }
-    // NOTE-CR: 自定义组件钩子函数-
+
+    // NOTE-CR: 自定义组件钩子函数-属性更改
     attributeChangedCallback (attr: ObservedAttrName, _oldVal: string, newVal: string): void {
       if (
         this.legalAttribute(attr, newVal) &&

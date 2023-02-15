@@ -158,3 +158,7 @@ For more commands, see [DEVELOP](https://github.com/micro-zoe/micro-app/blob/mas
 
 # License
 [MIT License](https://github.com/micro-zoe/micro-app/blob/master/LICENSE)
+
+# About Note
+
+key words: NOTE-CR

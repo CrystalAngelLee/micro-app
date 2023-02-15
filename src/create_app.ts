@@ -84,7 +84,9 @@ export default class CreateApp implements AppInterface {
       links: new Map<string, sourceLinkInfo>(),
       scripts: new Map<string, sourceScriptInfo>(),
     }
+    // NOTE-CR: 请求HTML内容-异步
     this.loadSourceCode()
+    // NOTE-CR: 开启沙箱
     this.useSandbox && (this.sandBox = new SandBox(name, url))
   }
 

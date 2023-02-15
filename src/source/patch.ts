@@ -359,6 +359,7 @@ function patchDocument () {
       // see https://github.com/micro-zoe/micro-app/issues/56
       rawDocument !== this
     ) {
+      // NOTE-CR：querySelector 重写
       return globalEnv.rawQuerySelector.call(this, selectors)
     }
     return appInstanceMap.get(appName)?.container?.querySelector(selectors) ?? null

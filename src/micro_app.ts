@@ -128,6 +128,7 @@ export class MicroApp extends EventCenterForBaseApp implements MicroAppConfigTyp
   fetch?: fetchType
   preFetch = preFetch
   excludeAssetFilter?: (assetUrl: string) => boolean
+  // NOTE-CR: 入口函数
   start (options?: OptionsType): void {
     if (!isBrowser || !window.customElements) {
       return logError('micro-app is not supported in this environment')
