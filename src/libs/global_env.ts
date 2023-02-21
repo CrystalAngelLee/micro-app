@@ -138,6 +138,7 @@ export function initGlobalEnv (): void {
     rejectMicroAppStyle()
     // NOTE-CR: 移除unmount事件，避免嵌套子应用事件重复注册
     releaseUnmountOfNestedApp()
+    // NOTE-CR: 监听unmount事件
     listenUmountOfNestedApp()
   }
 }

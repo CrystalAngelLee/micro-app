@@ -34,7 +34,9 @@ export function defineElement (tagName: string): void {
 
     constructor () {
       super()
+      // NOTE-CR: 重写 setAttribute 方法
       patchSetAttribute()
+      // NOTE-CR: 1.走完constructor后会进行基座应用的挂载动作
     }
 
     private isWaiting = false
@@ -56,16 +58,18 @@ export function defineElement (tagName: string): void {
     // baseRoute: route prefix, default is ''
     // keep-alive: open keep-alive mode
 
-    // NOTE-CR: 自定义组件钩子函数-标签挂载到document之后调用
+    // NOTE-CR: monted
     connectedCallback (): void {
       this.hasConnected = true
 
+      // NOTE-CR: defer：添加一个微任务
+      // NOTE-CR: 处理基座应用的 CREATED 生命周期
       defer(() => dispatchLifecyclesEvent(
         this,
         this.appName,
         lifeCycles.CREATED,
       ))
-      // NOTE-CR: 在微任务中添加任务
+      // NOTE-CR: 初始化子应用实例
       this.initialMount()
     }
 
@@ -128,10 +132,12 @@ export function defineElement (tagName: string): void {
     private initialMount (): void {
       if (!this.appName || !this.appUrl) return
 
+      // NOTE-CR: 开启 webComponents shadowDOM
       if (this.getDisposeResult('shadowDOM') && !this.shadowRoot && isFunction(this.attachShadow)) {
         this.attachShadow({ mode: 'open' })
       }
 
+      // NOTE-CR: 开启SSR模式
       if (this.getDisposeResult('ssr')) {
         this.ssrUrl = CompletionPath(globalEnv.rawWindow.location.pathname, this.appUrl)
       } else if (this.ssrUrl) {
@@ -166,6 +172,7 @@ export function defineElement (tagName: string): void {
           logError(`app name conflict, an app named ${this.appName} is running`, this.appName)
         }
       } else {
+        // NOTE-CR: 创建子应用实例
         this.handleCreateApp()
       }
     }

@@ -143,6 +143,7 @@ export class MicroApp extends EventCenterForBaseApp implements MicroAppConfigTyp
       }
     }
 
+    // NOTE-CR: 判断当前自定义标签是否被注册
     if (window.customElements.get(this.tagName)) {
       return logWarn(`element ${this.tagName} is already defined`)
     }
@@ -150,6 +151,7 @@ export class MicroApp extends EventCenterForBaseApp implements MicroAppConfigTyp
     // NOTE-CR: 初始化全局环境变量
     initGlobalEnv()
 
+    // NOTE-CR: 初始化参数
     if (options && isPlainObject(options)) {
       this.shadowDOM = options.shadowDOM
       this.destroy = options.destroy
