@@ -12,27 +12,43 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <title>children-react16</title>
     <style>
+      @charset "UTF-8";
       #react16 {
         color: red;
       }
     </style>
-    <!-- <script type='module'>
+    <script type='module' class="module">
       console.log('inline module script')
-    </script> -->
-    <!-- <link rel="stylesheet" href="http://127.0.0.1:8080/test.css" global>
-    <link rel="stylesheet" href="http://127.0.0.1:8080/test.css?a=1" global>
-    <link rel="stylesheet" href="http://127.0.0.1:8080/large.css"> -->
-    <!-- <script defer src="http://127.0.0.1:8080/test.js"></script> -->
-    <!-- <script>
-      console.log(6666666, this)
-    </script> -->
-    <!-- <link rel="stylesheet" href="http://127.0.0.1:8080/facefont.css"> -->
+    </script>
+    <script id="test-id">
+      console.log('测试script带有id时的处理逻辑')
+    </script>
+
+    <!-- <link rel="stylesheet" href="http://127.0.0.1:8080/test.css">
+    <link rel="stylesheet" href="http://127.0.0.1:8080/large.css">
+    <link rel="stylesheet" href="http://127.0.0.1:8080/facefont.css">
+    <script defer src="http://127.0.0.1:8080/js/defer.js"></script>
+    <script async src="http://127.0.0.1:8080/js/async.js"></script>
+    <script type='module' src="http://127.0.0.1:8080/js/module.js"></script>
+    <script pure src="http://127.0.0.1:8080/js/pure.js"></script>
+    <script inline src="http://127.0.0.1:8080/js/inline.js"></script>
+    <script src="http://127.0.0.1:8080/js/test.js"></script> -->
+
+    <style type="text/css">
+      /* @charset "UTF-8"; */
+      @keyframes Ws6lWOlzL1N2S94_Uz\+mO-5hg\=\=/*sdf*/ {0%{transform:scaleY(1);transform-origin:0 0;opacity:1}to{transform:scaleY(.8);transform-origin:0 0;opacity:0}}
+
+      .S94UzmO5hg\=\={
+        color:#fff;
+      }
+    </style>
+    <!-- <link rel="stylesheet" href="https://static.rokidcdn.com/test/ar-independent/0.0.2/static/css/2.846bef85.chunk.css"> -->
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
   </body>
   <script>
-    console.log('子应用 react 16 的内联script', window.__micro_app_name__)
+    console.log(`子应用${window.__MICRO_APP_NAME__}的内联script`)
   </script>
 </html>

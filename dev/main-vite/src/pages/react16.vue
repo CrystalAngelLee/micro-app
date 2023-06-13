@@ -22,6 +22,7 @@
       @datachange='handleDataChange'
       inline
       baseRoute='/react16'
+      keep-route-state
     >
       <!-- destroy  inline -->
     </micro-app>

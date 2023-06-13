@@ -1,3 +1,7 @@
+const AutoImport = require('unplugin-auto-import/webpack')
+const Components = require('unplugin-vue-components/webpack')
+const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
+
 module.exports = {
   publicPath: '/micro-app/vue3/',
   outputDir: 'vue3',
@@ -28,7 +32,16 @@ module.exports = {
           type: "javascript/auto"
         }
       ]
-    }
+    },
+    plugins: [
+      AutoImport({
+        resolvers: [ElementPlusResolver({
+          importStyle: false,
+        })],
+      }),
+      Components({
+        resolvers: [ElementPlusResolver()],
+      }),
+    ],
   },
-  transpileDependencies: ['element-plus'], // 解决element-plus使用 ?. 操作符导致启动失败的问题
 }

@@ -6,3 +6,4 @@ node_modules
 /docs
 /plugins
 /src/__tests__/demos
+/src/__tests__

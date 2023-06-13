@@ -1,6 +1,6 @@
 import { AppInterface } from '@micro-app/types'
 
-import { listenUmountOfNestedApp, releaseUnmountOfNestedApp } from '../../libs/additional'
+import { initEnvOfNestedApp } from '../../libs/nest_app'
 import { AppManager } from '../../app_manager'
 
 describe('Additional Util', () => {
@@ -14,6 +14,8 @@ describe('Additional Util', () => {
     container
   } as AppInterface
 
+  initEnvOfNestedApp()
+
   beforeEach(() => {
     window.__MICRO_APP_ENVIRONMENT__ = true
     appManager.set(appName, app)
@@ -25,8 +27,6 @@ describe('Additional Util', () => {
   })
 
   test('期望 listenUmountOfNestedApp 可以卸载嵌套子应用', () => {
-    listenUmountOfNestedApp()
-
     const unmountEvent = new CustomEvent('unmount')
     window.dispatchEvent(unmountEvent)
     expect(appManager.get(appName)).toBe(undefined)
@@ -35,10 +35,6 @@ describe('Additional Util', () => {
   })
 
   test('期望 releaseUnmountOfNestedApp 可以移除监听事件', () => {
-    listenUmountOfNestedApp()
-
-    releaseUnmountOfNestedApp()
-
     const unmountEvent = new CustomEvent('unmount')
     window.dispatchEvent(unmountEvent)
     expect(appManager.get(appName)).toBe(app)

@@ -1,4 +1,4 @@
-import Home from './pages/page1.vue'
+import Home from './pages/home.vue'
 
 const routes = [
   {
@@ -7,9 +7,14 @@ const routes = [
     component: Home,
   },
   {
-    path: '/page2',
-    name: 'page2',
-    component: () => import(/* webpackChunkName: "page2" */ './pages/page2.vue'),
+    path: '/element-plus',
+    name: 'element-plus',
+    component: () => import(/* webpackChunkName: "element-plus" */ './pages/element-plus.vue'),
+  },
+  {
+    path: '/ant-design-vue',
+    name: 'ant-design-vue',
+    component: () => import(/* webpackChunkName: "ant-design-vue" */ './pages/ant-design-vue.vue'),
   },
 ]
 

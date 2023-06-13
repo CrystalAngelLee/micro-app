@@ -2,7 +2,7 @@
   <div class="react17">
     <micro-app
       name='react17'
-      url='http://localhost:3002/'
+      url='http://localhost:3002/micro-app/react17/'
       :data='data'
     >
     <!-- destroy inline -->

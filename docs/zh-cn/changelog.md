@@ -8,6 +8,147 @@
 
 ---
 
+### 1.0.0-alpha.6
+
+`2022-08-18`
+
+- **New**
+
+  - 🆕 
+
+- **Bug Fix**
+
+  - 🐞 修复了router全局守卫参数和文档不一致的问题。
+
+- **Update**
+  - 🚀 
+
+
+### 1.0.0-alpha.5
+
+`2022-08-01`
+
+- **New**
+
+  - 🆕 新增子应用全局钩子函数mount, unmount，简化接入步骤。
+
+- **Update**
+  - 🚀 更新了1.0版本文档。
+
+
+### 1.0.0-alpha.4
+
+`2022-07-30`
+
+- **New**
+
+  - 🆕 新增了配置`disable-patch-request`，用于阻止MicroApp对子应用fetch、XMLHttpRequest等请求方法的重写。
+
+- **Bug Fix**
+
+  - 🐞 修复了设置document.title, history.scrollRestoration时报`Illegal invocation`错误的问题。
+  - 🐞 修复了在umd模式部分场景下二次渲染时全局变量和全局事件丢失的问题。
+  - 🐞 修复了高德地图二次渲染时地图无法显示的问题。
+  - 🐞 修复了`element-plus`按需加载时，点击ElSelect组件空白区域无法收起的问题。
+  - 🐞 修复了umd模式下每次渲染时fetch、XMLHttpRequest等API被重写的问题。
+
+- **Update**
+  - 🚀 更新了umd模式下全局事件和全局变量的处理逻辑，不再主动卸载全局事件和删除全局变量。
+  - 🚀 更新了1.0版本文档
+
+
+### 1.0.0-alpha.3
+
+`2022-07-21`
+
+- **New**
+
+  - 🆕 重写了基座的`pushState`、`replaceState`方法，自动将子应用的路由信息同步到浏览器地址。
+  - 🆕 重写了子应用的`Document`对象，每个子应用拥有单独的Document实例。
+
+- **Bug Fix**
+
+  - 🐞 修复了Document原型方法绑定到ProxyDocument时报错的问题。
+
+- **Update**
+
+  - 🚀 优化了路由相关代码和逻辑。
+  - 🚀 更新了案例，增加适配场景
+
+
+### 1.0.0-alpha.2
+
+`2022-07-15`
+
+- **New**
+
+  - 🆕 新增了`attachToURL`、`attachAllToURL`方法，用于将子应用的路由信息同步到浏览器地址。
+  - 🆕 新增了`setBaseRouter`、`getBaseRouter`方法，用于注册和使用基座路由。
+  - 🆕 新增了`ProxyDocument`，为子应用创建一个虚拟的document对象。
+
+- **Bug Fix**
+
+  - 🐞 修复了`ant-design-vue`的弹窗类组件及其它特殊情况下，子应用元素逃逸到原生body上的问题。
+  - 🐞 修复了在未设置`public_path`时，子应用的资源地址补全失败的问题。
+  - 🐞 修复了子应用在调用fetch等API时，元素绑定没有解除的问题。
+  - 🐞 修复了在`@keyframes`名称带有特殊字符时样式隔离失败的问题。
+
+- **Update**
+
+  - 🚀 优化了路由相关代码和逻辑。
+  - 🚀 更新了案例。
+
+
+### 1.0.0-alpha.1
+
+`2022-07-06`
+
+- **New**
+
+  - 🆕 新增了`proxyRequest`，用于拦截fetch、XMLHttpRequest、EventSource请求并进行处理。
+
+- **Bug Fix**
+
+  - 🐞 修复了通过`create-react-app`创建的react应用热更新时报错的问题。
+  - 🐞 修复了子应用执行`pushState/replaceState`时`popStateEvent`事件异常触发的问题。
+
+- **Update**
+
+  - 🚀 优化了资源加载相关代码和逻辑。
+
+
+### 0.8.6
+
+`2022-06-30`
+
+- **New**
+
+  - 🆕 在 plugin 中增加 excludeChecker 和 ignoreChecker 用于主应用主动忽略子应用部分 script 和 link。
+  - 🆕 新增了`processHtml`，用于在插件中处理html。
+
+- **Update**
+
+  - 🚀 优化了资源加载相关代码和逻辑。
+  - 🚀 优化了单元测试相关代码。
+
+
+### 1.0.0-alpha.0
+
+`2022-06-30`
+
+- **New**
+
+  - 🆕 新增了独立的路由系统 - `MemoryRouter`，完善JS沙箱。
+
+- **Bug Fix**
+
+  - 🐞 修复了在循环嵌套时`iconfont.js`在部分场景下报错的问题。
+
+- **Update**
+
+  - 🚀 优化了预加载相关代码和逻辑，提高并行渲染能力。
+
+
 ### 0.8.5
 
 `2022-02-14`

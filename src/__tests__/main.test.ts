@@ -97,7 +97,7 @@ describe('main process', () => {
       url: `http://127.0.0.1:${ports.main}/common`,
       // disableScopecss: xx,
       // disableSandbox: xx,
-      shadowDOM: true,
+      // shadowDOM: true,
     }])
   })
 
@@ -177,7 +177,7 @@ describe('main process', () => {
    * ]
    */
   test('render an unstable app with special attribute', async () => {
-    const microAppElement3 = document.createElement('micro-app')
+    const microAppElement3 = document.createElement('micro-app') as any
     expect(microAppElement3.data).toBeNull()
     // @ts-ignore
     microAppElement3.setAttribute('data', { count: 'count-1' })

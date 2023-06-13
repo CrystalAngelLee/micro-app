@@ -7,6 +7,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/*
+:global(.ocssContainer) {
+  @media (max-width: 575px){}
+  .abc {
+    color: red;
+  }
+}
+*/
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

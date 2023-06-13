@@ -36,12 +36,12 @@
 - Default: `false`
 - 使用方式: `<micro-app name='xx' url='xx' inline></micro-app>`
 
-默认情况下，子应用的js会被提取并在后台运行。
+默认情况下，子应用的js会被提取并在后台运行，这会导致调试困难。
 
 开启inline后，被提取的js会作为script标签插入应用中运行，在开发环境中更方便调试。
 
 > [!NOTE]
-> 开启inline后会稍微损耗性能，一般在开发环境中使用。
+> 开启inline后会稍微损耗性能，建议在开发环境中使用。
 
 ## destroy
 - Desc: `卸载时是否强制删除缓存资源`

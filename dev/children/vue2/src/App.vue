@@ -1,12 +1,22 @@
 <template>
   <div id="app">
-    <div class='tab-con'>
-      <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="home" name="/"></el-tab-pane>
-        <el-tab-pane label="page2" name="page2"></el-tab-pane>
-      </el-tabs>
+    <div>
+      <el-menu
+        :default-active="activeIndex"
+        class="el-menu-demo"
+        mode="horizontal"
+        router
+      >
+        <el-menu-item index="/">home</el-menu-item>
+        <el-menu-item index="/page2">page2</el-menu-item>
+        <el-menu-item index="/table">table</el-menu-item>
+      </el-menu>
     </div>
-    <router-view/>
+    <div @click="reload">点击刷新</div>
+    <!-- <keep-alive> -->
+      <router-view v-if="showView"></router-view>
+    <!-- </keep-alive> -->
+    <div id="test-innerHTML"></div>
   </div>
 </template>
 
@@ -16,11 +26,17 @@ export default {
   name: 'App',
   data () {
     return {
-      activeName: window.location.href.includes('#/page2') ? 'page2': '/',
+      activeIndex: '',
+      showView: true,
     }
   },
   created () {
-
+    this.$router.onReady(() => {
+      this.activeIndex = this.$route.path
+    })
+  },
+  mounted () {
+    document.getElementById('test-innerHTML').innerHTML = '<span>3333333333</span>'
   },
   components: {
 
@@ -28,6 +44,17 @@ export default {
   methods: {
     handleClick(tab) {
       this.$router.push(tab.name)
+    },
+    reload () {
+      this.showView = false
+      this.$nextTick(() => {
+        this.showView = true
+      })
+    }
+  },
+  watch: {
+    $route () {
+      this.activeIndex = this.$route.path
     }
   }
 }
@@ -44,6 +71,7 @@ export default {
   width: 100%;
   padding: 30px;
   box-sizing: border-box;
+  display: block;
 }
 
 .icon {
@@ -52,5 +80,9 @@ export default {
   vertical-align: -0.15em;
   fill: currentColor;
   overflow: hidden;
+}
+
+.el-menu-demo {
+  display: block;
 }
 </style>

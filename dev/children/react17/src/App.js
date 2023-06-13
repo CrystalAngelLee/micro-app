@@ -1,10 +1,21 @@
 import React from 'react'
+// import { Button, Drawer } from 'antd';
 import logo from './logo.svg';
 import './App.css';
 
 function App() {
+  // const [open, setOpen] = useState(false);
+
+  // const showDrawer = () => {
+  //   setOpen(true);
+  // };
+
+  // const onClose = () => {
+  //   setOpen(false);
+  // };
+
   const testClick = () => {
-    console.log(444444444)
+    console.log('react17: test click')
   }
   return (
     <div className="App">
@@ -22,6 +33,15 @@ function App() {
           Learn React
         </a>
       </header>
+      {/* <h1>抽屉</h1>
+      <Button type="primary" onClick={showDrawer}>
+        Open
+      </Button>
+      <Drawer title="Basic Drawer" placement="right" onClose={onClose} open={open}>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Drawer> */}
     </div>
   );
 }

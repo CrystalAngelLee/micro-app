@@ -11,7 +11,10 @@
 这一点和ShadowDom不同，在微前端下基座拥有统筹全局的作用，所以我们没有对基座应用操作子应用元素的行为进行限制。
 
 ### 解除元素绑定
-默认情况下，当子应用操作元素时会绑定元素作用域，而解绑过程是异步的，这可能会导致渲染出错，此时可以主动解除元素绑定来避免这个问题。
+默认情况下，当子应用操作元素时会绑定元素作用域，而解绑过程是异步的，这可能会导致操作元素异常，此时有两种方式可以解决这个问题。
+
+
+**方式一：执行removeDomScope**
 
 执行`removeDomScope`方法后，元素作用域会重置为基座应用。
 
@@ -22,12 +25,43 @@ import { removeDomScope } from '@micro-zoe/micro-app'
 
 // 重置作用域
 removeDomScope()
+
+// 全局获取id为root的元素
+window.document.getElementById('root')
 ```
 
 #### ** 子应用 **
 ```js
+// 注意不要使用window.rawWindow
+const _window = new Function('return window')()
+
 // 重置作用域
-window.microApp.removeDomScope()
+window.microApp.removeDomScope() 
+
+// 全局获取id为root的元素
+_window.document.getElementById('root') 
 ```
 <!-- tabs:end -->
 
+
+**方式二：使用setTimeout**
+<!-- tabs:start -->
+#### ** 基座应用 **
+```js
+// 等待解绑结束后操作元素
+setTimeout(() => {
+  window.document.getElementById('root') // 全局获取id为root的元素
+}, 0)
+```
+
+#### ** 子应用 **
+```js
+// 注意不要使用window.rawWindow
+const _window = new Function('return window')()
+
+// 等待解绑结束后操作元素
+setTimeout(() => {
+  _window.document.getElementById('root') // 全局获取id为root的元素
+}, 0)
+```
+<!-- tabs:end -->

@@ -1,6 +1,8 @@
 import type {
   AppInterface,
-  sourceLinkInfo,
+  LinkSourceInfo,
+  AttrsType,
+  fiberTasks,
 } from '@micro-app/types'
 import { fetchSource } from './fetch'
 import {
@@ -9,15 +11,47 @@ import {
   pureCreateElement,
   defer,
   logError,
+  getAttributes,
+  injectFiberTask,
+  serialExecFiberTasks,
 } from '../libs/utils'
-import scopedCSS from './scoped_css'
+import scopedCSS, { createPrefix } from '../sandbox/scoped_css'
 import {
   dispatchOnLoadEvent,
   dispatchOnErrorEvent,
 } from './load_event'
+import sourceCenter from './source_center'
+import globalEnv from '../libs/global_env'
 
-// Global links, reuse across apps
-export const globalLinks = new Map<string, string>()
+/**
+ *
+ * @param appName app.name
+ * @param linkInfo linkInfo of current address
+ */
+function getExistParseCode (
+  appName: string,
+  prefix: string,
+  linkInfo: LinkSourceInfo,
+): string | void {
+  const appSpace = linkInfo.appSpace
+  for (const item in appSpace) {
+    if (item !== appName) {
+      const appSpaceData = appSpace[item]
+      if (appSpaceData.parsedCode) {
+        return appSpaceData.parsedCode.replace(new RegExp(createPrefix(item, true), 'g'), prefix)
+      }
+    }
+  }
+}
+
+// transfer the attributes on the link to convertStyle
+function setConvertStyleAttr (convertStyle: HTMLStyleElement, attrs: AttrsType): void {
+  attrs.forEach((value, key) => {
+    if (key === 'rel') return
+    if (key === 'href') key = 'data-origin-href'
+    globalEnv.rawSetAttribute.call(convertStyle, key, value)
+  })
+}
 
 /**
  * Extract link elements
@@ -29,7 +63,7 @@ export const globalLinks = new Map<string, string>()
  */
 export function extractLinkFromHtml (
   link: HTMLLinkElement,
-  parent: Node,
+  parent: Node | null,
   app: AppInterface,
   isDynamic = false,
 ): any {
@@ -38,38 +72,46 @@ export function extractLinkFromHtml (
   let replaceComment: Comment | null = null
   if (rel === 'stylesheet' && href) {
     href = CompletionPath(href, app.url)
-    if (!isDynamic) {
-      replaceComment = document.createComment(`link element with href=${href} move to micro-app-head as style element`)
-      app.source.links.set(href, {
+    let linkInfo = sourceCenter.link.getInfo(href)
+    const appSpaceData = {
+      attrs: getAttributes(link),
+    }
+    if (!linkInfo) {
+      linkInfo = {
         code: '',
-        placeholder: replaceComment,
-        isGlobal: link.hasAttribute('global'),
-      })
-    } else {
-      return {
-        url: href,
-        info: {
-          code: '',
-          isGlobal: link.hasAttribute('global'),
+        appSpace: {
+          [app.name]: appSpaceData,
         }
       }
+    } else {
+      linkInfo.appSpace[app.name] = linkInfo.appSpace[app.name] || appSpaceData
     }
-  } else if (rel && ['prefetch', 'preload', 'prerender', 'icon', 'apple-touch-icon'].includes(rel)) {
-    // preload prefetch icon ....
+
+    sourceCenter.link.setInfo(href, linkInfo)
+
+    if (!isDynamic) {
+      app.source.links.add(href)
+      replaceComment = document.createComment(`link element with href=${href} move to micro-app-head as style element`)
+      linkInfo.appSpace[app.name].placeholder = replaceComment
+    } else {
+      return { address: href, linkInfo }
+    }
+  } else if (rel && ['prefetch', 'preload', 'prerender'].includes(rel)) {
+    // preload prefetch prerender ....
     if (isDynamic) {
       replaceComment = document.createComment(`link element with rel=${rel}${href ? ' & href=' + href : ''} removed by micro-app`)
     } else {
-      parent.removeChild(link)
+      parent?.removeChild(link)
     }
   } else if (href) {
     // dns-prefetch preconnect modulepreload search ....
-    link.setAttribute('href', CompletionPath(href, app.url))
+    globalEnv.rawSetAttribute.call(link, 'href', CompletionPath(href, app.url))
   }
 
   if (isDynamic) {
     return { replaceComment }
   } else if (replaceComment) {
-    return parent.replaceChild(replaceComment, link)
+    return parent?.replaceChild(replaceComment, link)
   }
 }
 
@@ -83,103 +125,176 @@ export function fetchLinksFromHtml (
   wrapElement: HTMLElement,
   app: AppInterface,
   microAppHead: Element,
+  fiberStyleResult: Promise<void> | null,
 ): void {
-  const linkEntries: Array<[string, sourceLinkInfo]> = Array.from(app.source.links.entries())
-
-  const fetchLinkPromise: Array<Promise<string>|string> = linkEntries.map(([url]) => {
-    return globalLinks.has(url) ? globalLinks.get(url)! : fetchSource(url, app.name)
+  const styleList: Array<string> = Array.from(app.source.links)
+  const fetchLinkPromise: Array<Promise<string> | string> = styleList.map((address) => {
+    const linkInfo = sourceCenter.link.getInfo(address)!
+    return linkInfo.code ? linkInfo.code : fetchSource(address, app.name)
   })
 
-  promiseStream<string>(fetchLinkPromise, (res: {data: string, index: number}) => {
-    fetchLinkSuccess(
-      linkEntries[res.index][0],
-      linkEntries[res.index][1],
+  const fiberLinkTasks: fiberTasks = fiberStyleResult ? [] : null
+
+  promiseStream<string>(fetchLinkPromise, (res: { data: string, index: number }) => {
+    injectFiberTask(fiberLinkTasks, () => fetchLinkSuccess(
+      styleList[res.index],
       res.data,
       microAppHead,
       app,
-    )
+    ))
   }, (err: {error: Error, index: number}) => {
     logError(err, app.name)
   }, () => {
-    app.onLoad(wrapElement)
+    /**
+     * 1. If fiberStyleResult exist, fiberLinkTasks must exist
+     * 2. Download link source while processing style
+     * 3. Process style first, and then process link
+     */
+    if (fiberStyleResult) {
+      fiberStyleResult.then(() => {
+        fiberLinkTasks!.push(() => Promise.resolve(app.onLoad(wrapElement)))
+        serialExecFiberTasks(fiberLinkTasks)
+      })
+    } else {
+      app.onLoad(wrapElement)
+    }
   })
 }
 
 /**
- * fetch link succeeded, replace placeholder with style tag
- * @param url resource address
- * @param info resource link info
- * @param data code
+ * Fetch link succeeded, replace placeholder with style tag
+ * NOTE:
+ * 1. Only exec when init, no longer exec when remount
+ * 2. Only handler html link element, not dynamic link or style
+ * 3. The same prefix can reuse parsedCode
+ * 4. Async exec with requestIdleCallback in prefetch or fiber
+ * 5. appSpace[app.name].placeholder/attrs must exist
+ * @param address resource address
+ * @param code link source code
  * @param microAppHead micro-app-head
- * @param app app
+ * @param app app instance
  */
 export function fetchLinkSuccess (
-  url: string,
-  info: sourceLinkInfo,
-  data: string,
+  address: string,
+  code: string,
   microAppHead: Element,
   app: AppInterface,
 ): void {
-  if (info.isGlobal && !globalLinks.has(url)) {
-    globalLinks.set(url, data)
+  /**
+   * linkInfo must exist, but linkInfo.code not
+   * so we set code to linkInfo.code
+   */
+  const linkInfo = sourceCenter.link.getInfo(address)!
+  linkInfo.code = code
+  const appSpaceData = linkInfo.appSpace[app.name]
+  const placeholder = appSpaceData.placeholder!
+  /**
+   * When prefetch app is replaced by a new app in the processing phase, since the linkInfo is common, when the linkInfo of the prefetch app is processed, it may have already been processed.
+   * This causes placeholder to be possibly null
+   * e.g.
+   * 1. prefetch app.url different from <micro-app></micro-app>
+   * 2. prefetch param different from <micro-app></micro-app>
+   */
+  if (placeholder) {
+    const convertStyle = pureCreateElement('style')
+
+    handleConvertStyle(
+      app,
+      address,
+      convertStyle,
+      linkInfo,
+      appSpaceData.attrs,
+    )
+
+    if (placeholder.parentNode) {
+      placeholder.parentNode.replaceChild(convertStyle, placeholder)
+    } else {
+      microAppHead.appendChild(convertStyle)
+    }
+
+    // clear placeholder
+    appSpaceData.placeholder = null
   }
-
-  const styleLink = pureCreateElement('style')
-  styleLink.textContent = data
-  styleLink.__MICRO_APP_LINK_PATH__ = url
-  styleLink.setAttribute('data-origin-href', url)
-
-  if (info.placeholder!.parentNode) {
-    info.placeholder!.parentNode.replaceChild(scopedCSS(styleLink, app), info.placeholder!)
-  } else {
-    microAppHead.appendChild(scopedCSS(styleLink, app))
-  }
-
-  info.placeholder = null
-  info.code = data
 }
 
 /**
- * get css from dynamic link
- * @param url link address
- * @param info info
+ * Get parsedCode, update convertStyle
+ * Actions:
+ * 1. get scope css (through scopedCSS or oldData)
+ * 2. record parsedCode
+ * 3. set parsedCode to convertStyle if need
+ * @param app app instance
+ * @param address resource address
+ * @param convertStyle converted style
+ * @param linkInfo linkInfo in sourceCenter
+ * @param attrs attrs of link
+ */
+export function handleConvertStyle (
+  app: AppInterface,
+  address: string,
+  convertStyle: HTMLStyleElement,
+  linkInfo: LinkSourceInfo,
+  attrs: AttrsType,
+): void {
+  if (app.scopecss) {
+    const appSpaceData = linkInfo.appSpace[app.name]
+    appSpaceData.prefix = appSpaceData.prefix || createPrefix(app.name)
+    if (!appSpaceData.parsedCode) {
+      const existParsedCode = getExistParseCode(app.name, appSpaceData.prefix, linkInfo)
+      if (!existParsedCode) {
+        convertStyle.textContent = linkInfo.code
+        scopedCSS(convertStyle, app, address)
+      } else {
+        convertStyle.textContent = existParsedCode
+      }
+      appSpaceData.parsedCode = convertStyle.textContent
+    } else {
+      convertStyle.textContent = appSpaceData.parsedCode
+    }
+  } else {
+    convertStyle.textContent = linkInfo.code
+  }
+
+  setConvertStyleAttr(convertStyle, attrs)
+}
+
+/**
+ * Handle css of dynamic link
+ * @param address link address
  * @param app app
+ * @param linkInfo linkInfo
  * @param originLink origin link element
- * @param replaceStyle style element which replaced origin link
  */
 export function formatDynamicLink (
-  url: string,
-  info: sourceLinkInfo,
+  address: string,
   app: AppInterface,
+  linkInfo: LinkSourceInfo,
   originLink: HTMLLinkElement,
-  replaceStyle: HTMLStyleElement,
-): void {
-  if (app.source.links.has(url)) {
-    replaceStyle.textContent = app.source.links.get(url)!.code
-    scopedCSS(replaceStyle, app)
-    defer(() => dispatchOnLoadEvent(originLink))
-    return
-  }
+): HTMLStyleElement {
+  const convertStyle = pureCreateElement('style')
 
-  if (globalLinks.has(url)) {
-    const code = globalLinks.get(url)!
-    info.code = code
-    app.source.links.set(url, info)
-    replaceStyle.textContent = code
-    scopedCSS(replaceStyle, app)
-    defer(() => dispatchOnLoadEvent(originLink))
-    return
-  }
-
-  fetchSource(url, app.name).then((data: string) => {
-    info.code = data
-    app.source.links.set(url, info)
-    info.isGlobal && globalLinks.set(url, data)
-    replaceStyle.textContent = data
-    scopedCSS(replaceStyle, app)
+  const handleDynamicLink = () => {
+    handleConvertStyle(
+      app,
+      address,
+      convertStyle,
+      linkInfo,
+      linkInfo.appSpace[app.name].attrs,
+    )
     dispatchOnLoadEvent(originLink)
-  }).catch((err) => {
-    logError(err, app.name)
-    dispatchOnErrorEvent(originLink)
-  })
+  }
+
+  if (linkInfo.code) {
+    defer(handleDynamicLink)
+  } else {
+    fetchSource(address, app.name).then((data: string) => {
+      linkInfo.code = data
+      handleDynamicLink()
+    }).catch((err) => {
+      logError(err, app.name)
+      dispatchOnErrorEvent(originLink)
+    })
+  }
+
+  return convertStyle
 }

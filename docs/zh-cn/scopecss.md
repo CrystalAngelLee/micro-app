@@ -88,7 +88,7 @@ microApp.start({
 ```
 
 > [!NOTE]
-> 上述注释规则中都以叹号开头(/*! */)，这是因为在build时大部分项目会将css中的注释删除以压缩体积，叹号开头是[cssnano](https://cssnano.co/)的一种规则，可以防止在build后注释被删除[discardcomments](https://cssnano.co/docs/optimisations/discardcomments/)。
+> 上述注释规则都以叹号开头(d/*! */)，这是因为在build时大部分项目会将css中的注释删除以压缩体积，叹号开头是[cssnano](https://cssnano.co/)的一种规则，可以防止在build时注释被删除[discardcomments](https://cssnano.co/docs/optimisations/discardcomments/)。
 >
 > 我们以cssnano为例，是因为它是PostCSS中使用最广泛的压缩插件，如果你使用了另外的压缩工具，请根据实际情况调整，防止build后的注释被删除。
 

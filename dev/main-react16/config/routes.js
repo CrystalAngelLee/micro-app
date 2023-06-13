@@ -45,10 +45,17 @@ export default [
                 exact: false,
               },
               {
-                path: '/vite',
-                name: 'vite',
+                path: '/vite2',
+                name: 'vite2',
                 icon: 'SendOutlined',
-                component: './vite/vite',
+                component: './vite2/vite2',
+                exact: false,
+              },
+              {
+                path: '/vite4',
+                name: 'vite4',
+                icon: 'RocketOutlined',
+                component: './vite4/vite4',
                 exact: false,
               },
               {
@@ -56,6 +63,13 @@ export default [
                 name: 'angular11',
                 icon: 'HistoryOutlined',
                 component: './angular11/angular11',
+                exact: false,
+              },
+              {
+                path: '/angular14',
+                name: 'angular14',
+                icon: 'HistoryOutlined',
+                component: './angular14/angular14',
                 exact: false,
               },
               {

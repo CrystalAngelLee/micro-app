@@ -144,7 +144,7 @@ if (window.__MICRO_APP_ENVIRONMENT__) {
 }
 ```
 
-**步骤2:** 在子应用入口文件的`最顶部`引入`public-path.js`
+**步骤2:** 在子应用入口文件的**最顶部**引入`public-path.js`
 ```js
 // entry
 import './public-path'

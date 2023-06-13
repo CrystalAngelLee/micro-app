@@ -2,7 +2,7 @@ import { appInstanceMap } from './create_app'
 import { AppInterface } from '@micro-app/types'
 
 export interface IAppManager {
-  get(appName: string): AppInterface | undefined
+  get(appName: string): AppInterface | void
   set(appName: string, app: AppInterface): void
   getAll(): AppInterface[]
   clear(): void
@@ -21,7 +21,7 @@ export class AppManager implements IAppManager {
     return this.instance
   }
 
-  public get (appName: string): AppInterface | undefined {
+  public get (appName: string): AppInterface | void {
     return this.appInstanceMap.get(appName)
   }
 

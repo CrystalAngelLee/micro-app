@@ -13,45 +13,52 @@ const isPro = process.env.NODE_ENV === 'production'
 fse.emptyDirSync(path.join(cwd, 'lib'))
 fse.emptyDirSync(path.join(cwd, 'polyfill'))
 
-// 通用插件
-const commonPlugins = [
-  resolve(),
-  babel({
-    babelHelpers: 'runtime',
-    presets: [
-      [
-        '@babel/preset-env',
-        {
-          modules: false
-        }
+function getCommonPlugins (isBundlerESMBuild) {
+  // 通用插件
+  return [
+    resolve(),
+    babel({
+      babelHelpers: 'runtime',
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            modules: false
+          }
+        ]
+      ],
+      plugins: [
+        '@babel/plugin-transform-runtime'
       ]
-    ],
-    plugins: [
-      '@babel/plugin-transform-runtime'
-    ]
-  }),
-  replace({
-    preventAssignment: true,
-    __MICRO_APP_VERSION__: version,
-    __TEST__: 'false',
-  })
-]
-
-// 通用配置
-const baseConfig = {
-  input: path.join(__dirname, 'src/index.ts'),
-  external: [
-    /@babel\/runtime/,
-  ].filter(Boolean),
-  plugins: commonPlugins.concat([
-    typescript({
-      tsconfig: path.join(__dirname, 'tsconfig.json'),
-      // typescript: require('typescript'),
     }),
-  ])
+    replace({
+      preventAssignment: true,
+      __MICRO_APP_VERSION__: version,
+      __TEST__: 'false',
+      __DEV__: isBundlerESMBuild
+        ? '(process.env.NODE_ENV !== \'production\')'
+        : JSON.stringify(!isPro),
+    })
+  ]
 }
 
-const esConfig = Object.assign({}, baseConfig, {
+function getBaseConfig (isBundlerESMBuild) {
+  // 通用配置
+  return {
+    input: path.join(__dirname, 'src/index.ts'),
+    external: [
+      /@babel\/runtime/,
+    ].filter(Boolean),
+    plugins: getCommonPlugins(isBundlerESMBuild).concat([
+      typescript({
+        tsconfig: path.join(__dirname, 'tsconfig.json'),
+        // typescript: require('typescript'),
+      }),
+    ])
+  }
+}
+
+const esConfig = Object.assign({}, getBaseConfig(true), {
   output: [
     {
       file: path.join(__dirname, 'lib/index.esm.js'),
@@ -61,7 +68,8 @@ const esConfig = Object.assign({}, baseConfig, {
   ],
 })
 
-const cjsConfig = Object.assign({}, baseConfig, {
+const baseConfigForNormal = getBaseConfig()
+const cjsConfig = Object.assign({}, baseConfigForNormal, {
   output: [
     {
       file: path.join(__dirname, 'lib/index.min.js'),
@@ -77,7 +85,7 @@ const cjsConfig = Object.assign({}, baseConfig, {
       name: 'microApp',
     }
   ],
-  plugins: baseConfig.plugins.concat([
+  plugins: baseConfigForNormal.plugins.concat([
     terser({
       ecma: 5,
     }),
@@ -96,7 +104,7 @@ polyfillFiles && polyfillFiles.forEach((file) => {
         format: 'es',
         sourcemap: true,
       },
-      plugins: commonPlugins.concat([
+      plugins: getCommonPlugins().concat([
         typescript(),
       ])
     }

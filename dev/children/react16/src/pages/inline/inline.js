@@ -5,18 +5,20 @@ import { useState } from 'react'
 import { Button, Spin } from 'antd'
 import microApp from '@micro-zoe/micro-app'
 import config from '../../config'
+import logo from '../../assets/logo.svg';
 import './inline.less'
 
 function Vue2 () {
   const [data] = useState({from: '来自基座的初始化数据'})
   const [showLoading, hideLoading] = useState(true)
+
   return (
     <div>
       <h3>子应用多层嵌套</h3>
       <div className='btn-con'>
         <Button
           type='primary'
-          onClick={() => microApp.setData('vue2', {dispatch: 'data from dispatch' + (+new Date())})}
+          onClick={() => microApp.setData('inline', {dispatch: 'data from dispatch' + (+new Date())})}
           style={{width: '120px'}}
         >
           发送数据
@@ -32,11 +34,13 @@ function Vue2 () {
         // onBeforemount={() => hideLoading(false)}
         onMounted={() => hideLoading(false)}
         // shadowDOM
-        destory
+        // destory
         // inline
         // disableScopecss
         // disableSandbox
+        // iframe
       />
+      <img src={logo} className="App-logo" alt="logo" width='100' />
     </div>
   )
 }

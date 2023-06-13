@@ -14,8 +14,8 @@
   <a href="https://github.com/micro-zoe/micro-app/blob/master/LICENSE">
     <img src="https://img.shields.io/npm/l/@micro-zoe/micro-app.svg" alt="license"/>
   </a>
-  <a href="https://gitter.im/microzoe/micro-app">
-    <img src="https://badges.gitter.im/microzoe/micro-app.svg" alt="gitter">
+  <a href="https://github.com/micro-zoe/micro-app/blob/dev/Contact.md">
+    <img src="https://img.shields.io/badge/chat-wechat-blue" alt="WeChat">
   </a>
   <a href="https://travis-ci.com/github/micro-zoe/micro-app">
     <img src="https://api.travis-ci.com/micro-zoe/micro-app.svg?branch=master" alt="travis"/>
@@ -25,7 +25,7 @@
   </a>
 </p>
 
-English｜[简体中文](./README.zh-cn.md)｜[Documentation](https://micro-zoe.github.io/micro-app/)｜[Discussions](https://github.com/micro-zoe/micro-app/discussions)｜[Gitter](https://gitter.im/microzoe/micro-app)
+English｜[简体中文](./README.zh-cn.md)｜[Documentation](https://micro-zoe.github.io/micro-app/)｜[Discussions](https://github.com/micro-zoe/micro-app/discussions)｜[WeChat](./Contact.md)
 
 # 📖Introduction
 micro-app is a micro front-end framework launched by JD Retail. It renders based on webcomponent-like and realizes the micro front-end from component thinking, it aiming to reduce the difficulty of getting started and improve work efficiency. 
@@ -35,10 +35,6 @@ It is the lowest cost framework for accessing micro front-end, and provides a se
 micro-app has no restrictions on the front-end framework, and any framework can be used as a base application to embed any type of micro application of the framework.
 
 # How to use
-The micro front end is divided into a base application (also called main application) and a micro application.
-
-Here is a common example: the base application uses the Vue framework, uses history routing, the micro application uses the react framework, and uses hash routing. We list the modifications that need to be made by the base application and the micro application, and introduce the use of micro-app in detail.
-
 ## base application
 **1、Install**
 ```bash
@@ -152,9 +148,9 @@ For more commands, see [DEVELOP](https://github.com/micro-zoe/micro-app/blob/mas
 </details>
 
 # Contributors
-<a href="https://github.com/micro-zoe/micro-app/graphs/contributors"><img src="https://micro-zoe.com/contributors.svg?height=55&people=13" /></a>
-<!-- opencollective is inaccurate  -->
-<!-- <a href="https://github.com/micro-zoe/micro-app/graphs/contributors"><img src="https://opencollective.com/micro-app/contributors.svg?width=890&button=false" /></a> -->
+<a href="https://github.com/micro-zoe/micro-app/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=micro-zoe/micro-app" />
+</a>
 
 # License
 [MIT License](https://github.com/micro-zoe/micro-app/blob/master/LICENSE)

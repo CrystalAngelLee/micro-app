@@ -5,6 +5,8 @@ export {
   getAllApps,
   unmountApp,
   unmountAllApps,
+  reload,
+  renderApp,
 } from './micro_app'
 export {
   default as preFetch,

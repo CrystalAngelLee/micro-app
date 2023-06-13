@@ -92,8 +92,8 @@ module.exports = function (webpackEnv) {
   // Get environment variables to inject into our app.
   const env = getClientEnvironment(paths.publicUrlOrPath.slice(0, -1));
 
-  // TODO: 热更新问题
-  const shouldUseReactRefresh = env.raw.FAST_REFRESH && false
+  // 热更新
+  const shouldUseReactRefresh = env.raw.FAST_REFRESH;
 
   // common function to get style loaders
   const getStyleLoaders = (cssOptions, preProcessor) => {
@@ -233,7 +233,8 @@ module.exports = function (webpackEnv) {
       globalObject: 'window',
       // library: 'react',
       // 请求确保每个子应用该值都不相同，否则可能出现 webpack chunk 互相影响的可能
-      jsonpFunction: 'vue-app-jsonpFunction', // webpack 5 不用配置该参数， webpack 5 将会直接使用 package.json name 作为唯一值，请确保应用间的 name 各不相同
+      // jsonpFunction: 'vue-app-jsonpFunction', // webpack 5 不用配置该参数， webpack 5 将会直接使用
+      jsonpFunction: `webpackJsonp-${appPackageJson.name}`, // package.json name 作为唯一值，请确保应用间的 name 各不相同
       // 保证子应用的资源路径变为绝对路径，避免子应用的相对资源在变为主应用上的相对资源，因为子应用和主应用在同一个文档流，相对路径是相对于主应用而言的
 
       // publicPath: 'http://localhost:3001',
@@ -616,8 +617,8 @@ module.exports = function (webpackEnv) {
       // Otherwise React will be compiled in the very slow development mode.
       new webpack.DefinePlugin(env.stringified),
       // This is necessary to emit hot updates (CSS and Fast Refresh):
-      // TODO: 热更新问题
-      // isEnvDevelopment && new webpack.HotModuleReplacementPlugin(),
+      // 热更新
+      isEnvDevelopment && new webpack.HotModuleReplacementPlugin(),
       // Experimental hot reloading for React .
       // https://github.com/facebook/react/tree/master/packages/react-refresh
       isEnvDevelopment &&

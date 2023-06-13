@@ -51,7 +51,8 @@ import {useRouter} from 'vue-router'
 const activeIndex = ref('/react16/')
 const {currentRoute} = useRouter()
 watch(currentRoute, (newVal, oldVal) => {
-  activeIndex.value = currentRoute.value.fullPath
+  // console.log(111111, currentRoute.value)
+  activeIndex.value = currentRoute.value.path
 })
 
 </script>

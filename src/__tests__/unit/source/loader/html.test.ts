@@ -8,6 +8,7 @@ import { setupMockFetch } from '../../mocks/fetch'
 import microApp from '../../../../micro_app'
 
 const setup = (html: string, error?: boolean) => {
+  // @ts-ignore by cangdu
   global.fetch = jest.fn().mockImplementation(setupMockFetch(html, error))
   const htmlLoader = HTMLLoader.getInstance()
   const successCb = jest.fn()

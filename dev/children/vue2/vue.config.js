@@ -20,6 +20,7 @@ module.exports = {
   configureWebpack: {
     output: {
       jsonpFunction: `webpackJsonp-chile-vue2`,
+      // globalObject: 'window',
     }
   },
 }

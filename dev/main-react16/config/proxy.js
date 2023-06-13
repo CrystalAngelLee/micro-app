@@ -6,6 +6,13 @@
  * https://pro.ant.design/docs/deploy
  */
 export default {
+  dev: {
+    '/sugrec': {
+      target: 'https://www.baidu.com',
+      secure: false,
+      changeOrigin: true,
+    }
+  }
   // dev: {
   //   '/api/': {
   //     target: 'https://preview.pro.ant.design',

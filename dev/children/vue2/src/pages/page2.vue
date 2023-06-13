@@ -1,6 +1,39 @@
 <template>
   <div class='page2'>
+    <img src="../assets/micro-app-logo.jpeg" alt="" width="100" />
     <div class="test-btn" @click="goback">goback</div>
+    <br />
+    <br />
+    <h1>选择器</h1>
+    <el-select v-model="selectValue" placeholder="请选择">
+      <el-option
+        v-for="item in selectOptions"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value">
+      </el-option>
+    </el-select>
+    <br />
+    <br />
+    <h1>下拉菜单</h1>
+    <el-dropdown trigger="click">
+      <span class="el-dropdown-link">
+        下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
+      </span>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item icon="el-icon-plus">黄金糕</el-dropdown-item>
+        <el-dropdown-item icon="el-icon-circle-plus">狮子头</el-dropdown-item>
+        <el-dropdown-item icon="el-icon-circle-plus-outline">螺蛳粉</el-dropdown-item>
+        <el-dropdown-item icon="el-icon-check">双皮奶</el-dropdown-item>
+        <el-dropdown-item icon="el-icon-circle-check">蚵仔煎</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+    <br />
+    <br />
+    <h1>颜色选择器</h1>
+    <div class="block">
+      <el-color-picker v-model="color1"></el-color-picker>
+    </div>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
       <el-form-item label="活动名称" prop="name">
         <el-input v-model="ruleForm.name"></el-input>
@@ -59,10 +92,14 @@
         <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>
       </span>
     </el-dialog>
+
+
   </div>
 </template>
 
 <script>
+// 测试umd二次渲染时全局变量是否丢失
+window.umdGlobalKey = 'umdGlobalKey'
 
 export default {
   name: 'Page1',
@@ -102,8 +139,38 @@ export default {
         desc: [
           { required: true, message: '请填写活动形式', trigger: 'blur' }
         ]
-      }
+      },
+      selectOptions: [{
+        value: '选项1',
+        label: '黄金糕'
+      }, {
+        value: '选项2',
+        label: '双皮奶'
+      }, {
+        value: '选项3',
+        label: '蚵仔煎'
+      }, {
+        value: '选项4',
+        label: '龙须面'
+      }, {
+        value: '选项5',
+        label: '北京烤鸭'
+      }],
+      selectValue: '',
+      color1: '#409EFF',
     };
+  },
+  created () {
+    console.log('vue2 page2 created')
+  },
+  mounted () {
+    console.log('vue2 page2 mounted')
+    if (!window.umdGlobalKey) {
+      alert('umdGlobalKey missing')
+    }
+  },
+  beforeDestroy () {
+    console.log('--beforeDestroy--')
   },
   methods: {
     submitForm(formName) {

@@ -41,7 +41,7 @@ export class HTMLLoader implements IHTMLLoader {
   }
 
   private formatHTML (htmlUrl: string, htmlStr: string, appName: string) {
-    return this.processHtml(htmlUrl, htmlStr, appName, microApp.plugins)
+    return this.processHtml(htmlUrl, htmlStr, appName, microApp.options.plugins)
       .replace(/<head[^>]*>[\s\S]*?<\/head>/i, (match) => {
         return match
           .replace(/<head/i, '<micro-app-head')
@@ -54,7 +54,7 @@ export class HTMLLoader implements IHTMLLoader {
       })
   }
 
-  private processHtml (url: string, code: string, appName: string, plugins: plugins | undefined): string {
+  private processHtml (url: string, code: string, appName: string, plugins: plugins | void): string {
     if (!plugins) return code
 
     const mergedPlugins: NonNullable<plugins['global']> = []
@@ -64,7 +64,7 @@ export class HTMLLoader implements IHTMLLoader {
     if (mergedPlugins.length > 0) {
       return mergedPlugins.reduce((preCode, plugin) => {
         if (isPlainObject(plugin) && isFunction(plugin.processHtml)) {
-          return plugin.processHtml!(preCode, url, plugin.options)
+          return plugin.processHtml!(preCode, url)
         }
         return preCode
       }, code)
