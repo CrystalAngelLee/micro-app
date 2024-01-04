@@ -37,7 +37,7 @@
     "start-child:vite2": "cd dev/children/vite2 && yarn start",
     "start-child:vite4": "cd dev/children/vite4 && yarn start",
     "start-child:angular11": "cd dev/children/angular11 && yarn start",
-    "docs": "docsify serve docs --port 2000",
+    "docsify_docs": "docsify serve docsify_docs --port 2000",
     "lint": "eslint --cache '**/*.{js,ts}'",
     "lint:fix": "yarn lint --fix",
     "createtype": "node scripts/create_type.js",

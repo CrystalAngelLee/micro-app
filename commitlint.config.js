@@ -10,6 +10,7 @@ module.exports = {
       'refactor',
       'test',
       'chore',
+      'docsify_docs'
     ]],
     'subject-full-stop': [0, 'never'], // 不允许有结束符号 .
     'subject-case': [0, 'never'] // 必须以小写开头
