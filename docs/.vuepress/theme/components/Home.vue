@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref, onBeforeUnmount } from 'vue'
 import {
   usePageFrontmatter,
   useSiteLocaleData,
 } from '@vuepress/client'
-import type {DefaultThemeHomePageFrontmatter} from '@vuepress/theme-default'
-
-// import "../home/js/micro-app-loading.js"
-// import "../home/js/index.umd.js"
+import type { DefaultThemeHomePageFrontmatter } from '@vuepress/theme-default'
+import "../home/js/micro-app-loading.js"
 import "../home/js/iconfont.js"
 
 const frontmatter = usePageFrontmatter<DefaultThemeHomePageFrontmatter>()
@@ -30,6 +28,76 @@ const tagline = computed(() => {
     ''
   )
 })
+const contentOneImg = ref<Element>()
+const contentTwoImg1 = ref<Element>()
+const contentTwoImg2 = ref<Element>()
+const microAppConOne = ref<HTMLDivElement>()
+const microAppConTwo = ref<HTMLDivElement>()
+
+const showContentOneImg = ref(false)
+const showContentTwoImg = ref(false)
+const showContentTwoImg2 = ref(false)
+const loadingConOne = ref(true)
+const loadingConTwo = ref(true)
+
+
+onMounted(() => {
+  const observer1 = new IntersectionObserver(([{ intersectionRatio }]) => {
+    if (intersectionRatio <= 0) return
+    observer1.disconnect()
+    showContentOneImg.value = true
+
+    setTimeout(() => { loadingConOne.value = false}, 1100)
+
+    // <micro-app-loading size='0.3' class="loading-logo"></micro-app-loading>
+    setTimeout(() => {
+      const myApp = document.createElement('micro-app')  as HTMLElement
+      myApp.setAttribute('name', 'my-app1')
+      myApp.setAttribute('disable-memory-router', 'true')
+      myApp.setAttribute('url', `https://zeroing.jd.com/micro-app/react17/`)
+      myApp.addEventListener('mounted', () => {
+        microAppConOne.value?.removeChild(microAppConOne.value.children[0])
+      })
+      microAppConOne.value?.appendChild(myApp)
+    }, 3000)
+  })
+
+  observer1.observe(contentOneImg.value as Element)
+
+  const observer2 = new IntersectionObserver(([{ intersectionRatio }]) => {
+    if (intersectionRatio <= 0) return
+    observer2.disconnect()
+    showContentTwoImg.value = true
+  })
+
+  observer2.observe(contentTwoImg1.value as Element)
+
+  const observer3 = new IntersectionObserver(([{ intersectionRatio }]) => {
+    if (intersectionRatio <= 0) return
+    observer3.disconnect()
+    showContentTwoImg2.value = true
+
+    setTimeout(() => { loadingConTwo.value = false }, 1100)
+
+    setTimeout(() => {
+      const myApp = document.createElement('micro-app')
+      myApp.setAttribute('name', 'my-app2')
+      myApp.setAttribute('url', `https://zeroing.jd.com/micro-app/react17/`)
+      myApp.setAttribute('disable-memory-router', 'true')
+      myApp.addEventListener('mounted', () => {
+        microAppConTwo.value?.removeChild(microAppConTwo.value?.children[0])
+      })
+      microAppConTwo.value?.appendChild(myApp)
+    }, 3000);
+  })
+  observer3.observe(contentTwoImg2.value as Element)
+
+  onBeforeUnmount(() => {
+    observer1.disconnect()
+    observer2.disconnect()
+    observer3.disconnect()
+  })
+})
 </script>
 
 <template>
@@ -47,7 +115,8 @@ const tagline = computed(() => {
           <a class='header-nav-title' href="/v0/zh/">0.x文档</a>
           <a class='header-nav-title' href="https://zeroing.jd.com/micro-app/demo/" target="blank">示例</a>
           <a class='header-nav-title' href="/zh/micro-app-devtools">Micro-App-DevTools</a>
-          <a class='header-nav-title' href="https://github.com/micro-zoe/micro-app" target="blank"><img class='github-icon' src="../home/assets/github-logo.png" alt="github"></a>
+          <a class='header-nav-title' href="https://github.com/micro-zoe/micro-app" target="blank"><img
+              class='github-icon' src="../home/assets/github-logo.png" alt="github"></a>
         </nav>
       </header>
       <section class='introduce'>
@@ -83,9 +152,13 @@ const tagline = computed(() => {
       <section class="content-common">
         <h3 class="content-common-title">只需一行代码，实现微前端，如此简单</h3>
         <div class="content-common-detail">
-          <img class='content-one-img' src="../home/assets/one-line.png" alt="">
-          <img class='content-common-arrow-right' src="../home/assets/arrow-right.png" alt="">
-          <div class='micro-app-con micro-app-con-one'>
+          <img class='content-one-img' :class="{ 'content-one-img-show': showContentOneImg }"
+            src="../home/assets/one-line.png" alt="" ref="contentOneImg">
+          <img class='content-common-arrow-right' :class="{ 'content-common-arrow-right-show': showContentOneImg }"
+            src="../home/assets/arrow-right.png" alt="">
+          <div class='micro-app-con micro-app-con-one' :class="{ 'micro-app-con-show': showContentOneImg }"
+            ref="microAppConOne">
+            <micro-app-loading size='0.3' class="loading-logo" :class="{ hidden: loadingConOne }"></micro-app-loading>
           </div>
         </div>
       </section>
@@ -94,17 +167,22 @@ const tagline = computed(() => {
         <h3 class="content-common-title">无关技术栈，任何框架皆可使用</h3>
         <div class="content-common-detail">
           <div class="content-two-imgs-con">
-            <div class="content-two-img-con">
+            <div class="content-two-img-con" :class="{ 'content-two-img-con-show': showContentTwoImg }"
+              ref="contentTwoImg1">
               <img class="content-two-img-logo" src="../home/assets/react-logo.png" alt="">
               <img class="content-two-img-code" src="../home/assets/react-code.png" alt="">
             </div>
-            <div class="content-two-img-con">
+            <div class="content-two-img-con" :class="{ 'content-two-img-con-show': showContentTwoImg2 }"
+              ref="contentTwoImg2">
               <img class="content-two-img-logo" src="../home/assets/vue-logo.png" alt="">
               <img class="content-two-img-code" src="../home/assets/vue-code.png" alt="">
             </div>
           </div>
-          <img class='content-common-arrow-right' src="../home/assets/arrow-right.png" alt="">
-          <div class='micro-app-con micro-app-con-two'>
+          <img class='content-common-arrow-right' :class="{ 'content-common-arrow-right-show': showContentTwoImg2 }"
+            src="../home/assets/arrow-right.png" alt="">
+          <div class='micro-app-con micro-app-con-two' :class="{ 'micro-app-con-show': showContentTwoImg2 }"
+            ref="microAppConTwo">
+            <micro-app-loading size='0.3' class="loading-logo" :class="{ hidden: loadingConTwo }"></micro-app-loading>
           </div>
         </div>
       </section>
@@ -187,9 +265,8 @@ const tagline = computed(() => {
           </dd>
         </dl>
       </div>
-    </footer>
-  </main>
-</template>
+  </footer>
+</main></template>
 
 <style src="../home/css/index.css" scoped></style>
 <style src="../home/css/animation.css" scoped></style>

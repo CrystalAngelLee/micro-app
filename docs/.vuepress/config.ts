@@ -3,6 +3,7 @@ import type { Plugin } from '@vuepress/core';
 import { viteBundler } from '@vuepress/bundler-vite'
 import { getDirname, path } from '@vuepress/utils'
 import { registerComponentsPlugin } from '@vuepress/plugin-register-components'
+import { containerPlugin } from '@vuepress/plugin-container'
 import { clipboardPlugin } from 'vuepress-plugin-clipboard'
 import microAppTheme from './theme'
 import { navbar as navbarZh, sidebarZh } from './configs'
@@ -76,6 +77,15 @@ export default defineUserConfig({
       components: {
         Tabs: path.resolve(__dirname, './components/Tabs.tsx'),
         TabPanel: path.resolve(__dirname, './components/TabPanel.vue')
+      },
+    }),
+    /** @see: https://vuepress.github.io/zh/reference/plugin/container.html */
+    containerPlugin({
+      type: 'note',
+      locales: {
+        '/': {
+          defaultInfo: 'Note',
+        },
       },
     }),
   ]
