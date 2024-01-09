@@ -48,6 +48,7 @@ export const sidebarZh: SidebarConfig = {
         { text: 'API', link: '/zh/api/'},
         { text: 'Micro-App-DevTools', link: '/zh/micro-app-devtools/'},
         { text: '部署',link: '/zh/deploy.html'},
+        { text: '常见问题',link: '/zh/questions.html'},
         { text: '更新日志',link: '/zh/changelog.html'},
       ]
     }

@@ -35,8 +35,6 @@ const props = defineProps({
 let { item } = toRefs(props)
 const route = useRoute()
 
-console.log('route', route.hash, route.path)
-
 const isActive = computed(() => route.hash === item.value.link)
 const itemClass = computed(() => ({
   'sidebar-item': true,
