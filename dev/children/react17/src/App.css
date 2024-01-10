@@ -1,3 +1,5 @@
+@import url('./font/iconfont.css');
+
 .App {
   text-align: center;
 }
@@ -22,7 +24,7 @@
   font-size: calc(10px + 2vmin);
   color: #333;
   /* test about @container */
-  container-type: inline-size; 
+  container-type: inline-size;
 }
 
 @container (max-width: 1000px) {

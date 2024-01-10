@@ -6,6 +6,7 @@ import microApp from '@micro-zoe/micro-app'
 import { Spin } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 import config from '../../config'
+import './font/iconfont.css'
 
 const antIcon = <LoadingOutlined style={{ fontSize: 30 }} spin />
 
@@ -29,6 +30,7 @@ function React17 () {
       {
         showLoading && <Spin indicator={antIcon} />
       }
+      <i className="iconfont right"></i>
       <micro-app
         name='react17'
         url={`${config.react17}micro-app/react17`}
